@@ -38,6 +38,11 @@ function showContainer(name) {
         $('.nav-nologin').hide();
         $('.nav-login').show();
         $('#notepad-body').show();
+        if(localStorage.username='游客') {
+            $('.nav-nologin').show();
+            $('.nav-login').show();
+            $(".nav-login-in").hide()
+        }
         localStorage.lastSection = name;
     } else {
         $('.nav-login').hide();
@@ -62,14 +67,28 @@ $(function(){
     var interval = setInterval(function(){
         background.popupOpen('background');
     }, 2000);
+    /* 用户免登陆登陆操作 */
+    $("#FreeLoginBtn").click(function(){
+        $('#usernameSpan').html('游客');
+        localStorage.username = '游客';
+        localStorage.password = '';
+        localStorage.sessionId = '';
+        localStorage.isVip = 0;
+        localStorage.isLogin = 'false';
+        promptingMessage.show('success', chrome.i18n.getMessage('success_login'), 2);
+        showContainer('body');
+        // 接下来要获取分类列表
+        getAllNote();
+    });
     /* popup打开时默认窗口 */
     if(localStorage.lastSection == 'login' || localStorage.lastSection == 'body' || localStorage.lastSection == 'register') {
-        if(localStorage.isLogin == 'false') {
-            localStorage.lastSection = 'login';
-        }
-        showContainer(localStorage.lastSection);
-        if(localStorage.username) {
-            $('#loginAccount').val(localStorage.username);
+        if(localStorage.username == '游客') {
+            $("#FreeLoginBtn").trigger("click");
+        }else{
+            showContainer(localStorage.lastSection);
+            if(localStorage.username) {
+                $('#loginAccount').val(localStorage.username);
+            }
         }
     }
     /* 如果用户是登陆状态下显示左上角用户名 */
@@ -174,19 +193,7 @@ $(function(){
             $("#loginBtn").click();
         }
     });
-    /* 用户免登陆登陆操作 */
-    $("#FreeLoginBtn").click(function(){
-        $('#usernameSpan').html('游客');
-        localStorage.username = '游客';
-        localStorage.password = '';
-        localStorage.sessionId = '';
-        localStorage.isVip = 0;
-        localStorage.isLogin = 'false';
-        promptingMessage.show('success', chrome.i18n.getMessage('success_login'), 2);
-        showContainer('body');
-        // 接下来要获取分类列表
-        getAllNote();
-    });
+
     /* 用户登陆操作 */
     $("#loginBtn").click(function(){
         promptingMessage.show('info', chrome.i18n.getMessage('logining'), 0);
