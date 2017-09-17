@@ -1,0 +1,27 @@
+body{width:800px; font-size:14px;}
+
+.navbar {margin-bottom:5px; min-height: 30px; border-radius:0px;}
+.navbar-nav > li > a {padding-top: 5px; padding-bottom: 5px;}
+.navbar-brand {height: 30px; padding-top: 5px; font-size:16px;}
+.navbar-toggle {margin-top: 3px; margin-bottom: 3px;}
+.nav > li > a {padding:5px;}
+.container {width:800px; padding:0px; margin:0px auto;}
+.panel {border-radius:0px; margin-bottom: 0px;}
+.panel-body {padding:5px 0px;}
+.panel-heading {padding:5px 5px;}
+
+.nav-pills>li>a {font-size:12px; border-radius:2px;}
+
+.left-menu {margin-top:5px; border:0px; height:440px; overflow-y:auto; padding:0px 5px; background-color: #fafafa;}
+.left-menu > .nav > li > a {height:24px; overflow:hidden; font-size:12px;background-color: #eee}
+.left-menu > .nav > li.active > a {background-color: #337ab7}
+
+#editor {overflow:scroll; height:400px; padding:5px;}
+#myModal {display: none;}
+.prompting {position: fixed; margin:auto;left:0; right:0; top:0; bottom:0; width:300px; height:1px; display: none; height:55px;}
+.prompting .alert{display: inline-block;}
+.footer-fix {position: fixed; bottom:0px; width:800px; height:30px; background-color:#e7e7e7; display:none;}
+.footer-fix > a {line-height:30px; margin-right:20px;}
+.nav-nologin, nav-login {display: none;}
+.forget-password {color:#c8181b; font-size:12px; padding-left:10px;}
+.help-block {font-size:12px;}

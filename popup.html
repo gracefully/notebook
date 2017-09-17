@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="styles/bootstrap.min.css" rel="stylesheet">
+    <link href="styles/popup.css" rel="stylesheet">
+    <script src="scripts/api.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/jquery.hotkeys.js"></script>
+    <script src="scripts/bootstrap-wysiwyg.js"></script>
+    <script src="scripts/popup.js"></script>
+    <script src="scripts/md5.min.js"></script>
+</head>
+<body>
+<!-- Nav 开始 -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#"><span lang="extension_short_name">记事本</span></a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="nav-nologin"><a href="#" id="loginTabLink"><span lang="login">登陆</span></a></li>
+                <li class="nav-nologin"><a href="#" id="registerTabLink"><span lang="register">注册</span></a></li>
+                <li class="nav-login"><a href="#"><span lang="welcome">您好</span> <span id="usernameSpan"></span></a></li>
+                <li class="dropdown nav-login">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span lang="menu">菜单</span> <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" id="popoutLink"><span class="glyphicon glyphicon-level-up"></span> <span lang="window">窗口化</span></a></li>
+                        <li><a href="#" id="exportToTxtLink"><span class="glyphicon glyphicon-share"></span> <span lang="export_to_file">导出文本</span></a></li>
+                        <li><a href="#" id="changePasswordLink"><span class="glyphicon glyphicon-erase"></span> <span lang="change_password">修改密码</span></a></li>
+                        <li><a href="#" id="logoutLink"><span class="glyphicon glyphicon-log-out"></span> <span lang="logout">退出</span></a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="donateLink"><span class="glyphicon glyphicon-piggy-bank"></span> <span lang="donate">捐助</span></a></li>
+                        <li><a href="#" id="aboutUseLink"><span class="glyphicon glyphicon-question-sign"></span> <span lang="about_use">使用说明</span></a></li>
+                        <li><a href="#" class="aboutLink"><span class="glyphicon glyphicon-info-sign"></span> <span lang="about">关于</span> v1.8.0</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- Nav 结束 -->
+<div class="container" id="notepad-body">
+    <!-- Left Begin -->
+    <div class="col-xs-2 text-center" style="padding:0px 5px;">
+        <div class="btn-group btn-group-sm" role="group">
+            <a href="#" id="noteAddLink" class="btn btn-default"><strong><span class="glyphicon glyphicon-plus"></span><span lang="add">增加</span></strong></a>
+            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#myModal"><strong><span class="glyphicon glyphicon-minus"></span><span lang="delete">删除</span></strong></a>
+        </div>
+        <div class="left-menu">
+            <ul class="nav nav-pills nav-stacked text-left"></ul>
+        </div>
+    </div>
+    <!-- Left End -->
+    <div class="col-xs-10" style="padding:0px;">
+        <div class="form-inline">
+            <div class="pull-left">
+                <div class="form-group">
+                    <input type="text" id="noteTitle" class="form-control input-sm" placeholder="请输入标题" value="" style="width:350px; font-size:14px;">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="noteSort" class="form-control input-sm" placeholder="排序" value="" style="width:50px; font-size:14px;">
+                </div>
+                <div class="form-group">
+                    <span class="label label-default" id="noteUpdateTime" style="width:80px; display: block; white-space:normal" title="最后更新时间，绿色已同步，红色未同步"></span>
+                </div>
+            </div>
+            <div class="form-group pull-right" style="display:none">
+                <a href="#" class="btn btn-primary btn-sm" id="noteSyncLink"><span class="glyphicon glyphicon-cloud"></span> <span lang="synchronize">云同步</span></a>
+                <a href="#" class="btn btn-default btn-sm" id="noteHistoryLink"><span class="glyphicon glyphicon-time"></span> <span lang="history">历史记录</span></a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div style="margin-top:5px;" class="panel panel-default">
+            <!-- editer begin -->
+            <div class="form-inline panel-heading" data-role="editor-toolbar" data-target="#editor">
+                <div class="btn-group">
+                    <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" title="Font"><i class="glyphicon glyphicon-font"></i><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a data-edit="fontName Serif" style="font-family:'Serif'">Serif</a></li>
+                        <li><a data-edit="fontName Sans" style="font-family:'Sans'">Sans</a></li>
+                        <li><a data-edit="fontName Arial" style="font-family:'Arial'">Arial</a></li>
+                        <li><a data-edit="fontName Arial Black" style="font-family:'Arial Black'">Arial Black</a></li>
+                        <li><a data-edit="fontName Courier" style="font-family:'Courier'">Courier</a></li>
+                        <li><a data-edit="fontName Courier New" style="font-family:'Courier New'">Courier New</a></li>
+                        <li><a data-edit="fontName Comic Sans MS" style="font-family:'Comic Sans MS'">Comic Sans MS</a></li>
+                        <li><a data-edit="fontName Helvetica" style="font-family:'Helvetica'">Helvetica</a></li>
+                        <li><a data-edit="fontName Impact" style="font-family:'Impact'">Impact</a></li>
+                        <li><a data-edit="fontName Lucida Grande" style="font-family:'Lucida Grande'">Lucida Grande</a></li>
+                        <li><a data-edit="fontName Lucida Sans" style="font-family:'Lucida Sans'">Lucida Sans</a></li>
+                        <li><a data-edit="fontName Tahoma" style="font-family:'Tahoma'">Tahoma</a></li>
+                        <li><a data-edit="fontName Times" style="font-family:'Times'">Times</a></li>
+                        <li><a data-edit="fontName Times New Roman" style="font-family:'Times New Roman'">Times New Roman</a></li>
+                        <li><a data-edit="fontName Verdana" style="font-family:'Verdana'">Verdana</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" title="Font Size"><i class="glyphicon glyphicon-text-size"></i>&nbsp;<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a data-edit="fontSize 7"><font size="7">7 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 6"><font size="6">6 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 5"><font size="5">5 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 4"><font size="4">4 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 3"><font size="3">3 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 2"><font size="2">2 Font Size</font></a></li>
+                        <li><a data-edit="fontSize 1"><font size="1">1 Font Size</font></a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" title="Background Color"><i class="glyphicon glyphicon-text-background"></i>&nbsp;<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="text-center"><a data-edit="backColor black" style="background-color:black">black</a></li>
+                        <li class="text-center"><a data-edit="backColor gray" style="background-color:gray">gray</a></li>
+                        <li class="text-center"><a data-edit="backColor silver" style="background-color:silver">silver</a></li>
+                        <li class="text-center"><a data-edit="backColor red" style="background-color:red">red</a></li>
+                        <li class="text-center"><a data-edit="backColor orangered" style="background-color:orangered">orangered</a></li>
+                        <li class="text-center"><a data-edit="backColor lightcoral" style="background-color:lightcoral">lightcoral</a></li>
+                        <li class="text-center"><a data-edit="backColor green" style="background-color:green">green</a></li>
+                        <li class="text-center"><a data-edit="backColor lawngreen" style="background-color:lawngreen">lawngreen</a></li>
+                        <li class="text-center"><a data-edit="backColor lightgreen" style="background-color:lightgreen">lightgreen</a></li>
+                        <li class="text-center"><a data-edit="backColor blue" style="background-color:blue">blue</a></li>
+                        <li class="text-center"><a data-edit="backColor royalblue" style="background-color:royalblue">royalblue</a></li>
+                        <li class="text-center"><a data-edit="backColor dodgerblue" style="background-color:dodgerblue">dodgerblue</a></li>
+                        <li class="text-center"><a data-edit="backColor yellow" style="background-color:yellow">yellow</a></li>
+                        <li class="text-center"><a data-edit="backColor wheat" style="background-color:wheat">wheat</a></li>
+                        <li class="text-center"><a data-edit="backColor goldenrod" style="background-color:goldenrod">goldenrod</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown" title="Color"><i class="glyphicon glyphicon-text-color"></i>&nbsp;<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a data-edit="foreColor black" style="color:black"><span class="glyphicon glyphicon-stop"></span> black</a></li>
+                        <li><a data-edit="foreColor gray" style="color:gray"><span class="glyphicon glyphicon-stop"></span> gray</a></li>
+                        <li><a data-edit="foreColor silver" style="color:silver"><span class="glyphicon glyphicon-stop"></span> silver</a></li>
+                        <li><a data-edit="foreColor red" style="color:red"><span class="glyphicon glyphicon-stop"></span> red</a></li>
+                        <li><a data-edit="foreColor orangered" style="color:orangered"><span class="glyphicon glyphicon-stop"></span> orangered</a></li>
+                        <li><a data-edit="foreColor lightcoral" style="color:lightcoral"><span class="glyphicon glyphicon-stop"></span> lightcoral</a></li>
+                        <li><a data-edit="foreColor green" style="color:green"><span class="glyphicon glyphicon-stop"></span> green</a></li>
+                        <li><a data-edit="foreColor lawngreen" style="color:lawngreen"><span class="glyphicon glyphicon-stop"></span> lawngreen</a></li>
+                        <li><a data-edit="foreColor lightgreen" style="color:lightgreen"><span class="glyphicon glyphicon-stop"></span> lightgreen</a></li>
+                        <li><a data-edit="foreColor blue" style="color:blue"><span class="glyphicon glyphicon-stop"></span> blue</a></li>
+                        <li><a data-edit="foreColor royalblue" style="color:royalblue"><span class="glyphicon glyphicon-stop"></span> royalblue</a></li>
+                        <li><a data-edit="foreColor dodgerblue" style="color:dodgerblue"><span class="glyphicon glyphicon-stop"></span> dodgerblue</a></li>
+                        <li><a data-edit="foreColor yellow" style="color:yellow"><span class="glyphicon glyphicon-stop"></span> yellow</a></li>
+                        <li><a data-edit="foreColor wheat" style="color:wheat"><span class="glyphicon glyphicon-stop"></span> wheat</a></li>
+                        <li><a data-edit="foreColor goldenrod" style="color:goldenrod"><span class="glyphicon glyphicon-stop"></span> goldenrod</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default btn-sm" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><span class="glyphicon glyphicon-bold"></span></a>
+                    <a class="btn btn-default btn-sm" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="glyphicon glyphicon-italic"></i></a>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default btn-sm" data-edit="insertunorderedlist" title="Bullet list"><i class="glyphicon glyphicon-list"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="outdent" title="Reduce indent (Shift+Tab)"><i class="glyphicon glyphicon-indent-right"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="indent" title="Indent (Tab)"><i class="glyphicon glyphicon-indent-left"></i></a>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default btn-sm" data-edit="justifyleft" title="Align Left (Ctrl/Cmd+L)"><i class="glyphicon glyphicon-align-left"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="justifycenter" title="Center (Ctrl/Cmd+E)"><i class="glyphicon glyphicon-align-center"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="justifyright" title="Align Right (Ctrl/Cmd+R)"><i class="glyphicon glyphicon-align-right"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="justifyfull" title="Justify (Ctrl/Cmd+J)"><i class="glyphicon glyphicon-align-justify"></i></a>
+                </div>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-default btn-sm" data-edit="undo" title="Undo (Ctrl/Cmd+Z)"><i class="glyphicon glyphicon-arrow-left"></i></a>
+                    <a class="btn btn-default btn-sm" data-edit="redo" title="Redo (Ctrl/Cmd+Y)"><i class="glyphicon glyphicon-arrow-right"></i></a>
+                </div>
+            </div>
+            <div id="editor" class="panel-body"></div>
+            <!-- editer end -->
+        </div>
+        <div class="text-right" id="notepad-notice" style="padding-right:15px; line-height:24px; font-size:12px; background-color:#fafafa; display:none;"></div>
+    </div>
+</div>
+<!-- 登陆开始 -->
+<div class="container form-horizontal" id="notepad-login" style="padding:50px 0px 100px;">
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="account">会员账号</label>
+        <div class="col-xs-5">
+            <input type="text" id="loginAccount" class="form-control" placeholder="会员账号" lang="account" />
+        </div>
+        <div class="help-block col-xs-3"></div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="login_password">登陆密码</label>
+        <div class="col-xs-5">
+            <input type="password" id="loginPassword" class="form-control" placeholder="" />
+        </div>
+        <div class="help-block col-xs-3"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-5 col-xs-offset-4">
+            <button class="btn btn-primary" id="loginBtn"> <span lang="login_now">马上登陆</span> </button>
+            <button class="btn btn-primary" id="FreeLoginBtn"> <span lang="free_login_now">免费使用</span> </button>
+            <a href="#" class="forget-password" id="forgetPwLink"><span lang="forget_password">我要找回密码?</span></a>
+        </div>
+        <div class="help-block col-xs-2"></div>
+    </div>
+</div>
+<!-- 登陆结束 -->
+<!-- 注册开始 -->
+<div class="container form-horizontal" id="notepad-register" style="padding:50px 0px 80px;">
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="username">用户名</label>
+        <div class="col-xs-5">
+            <input type="text" id="registerUsername" class="form-control" placeholder="用户名" lang="username" />
+        </div>
+        <div class="help-block col-xs-3"><span lang="required">必填项</span></div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="email">邮箱</label>
+        <div class="col-xs-5">
+            <input type="text" id="registerEmail" class="form-control" placeholder="邮箱" lang="email" />
+        </div>
+        <div class="help-block col-xs-3"><span lang="required_for_find_password">必填项，用于找回密码</span></div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="mobile">手机号</label>
+        <div class="col-xs-5">
+            <input type="text" id="registerMobile" class="form-control" placeholder="手机号" lang="mobile" />
+        </div>
+        <div class="help-block col-xs-3"><span lang="option_for_find_password">选填，用于找回密码</span></div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-2 col-xs-offset-2 control-label" lang="login_password">登陆密码</label>
+        <div class="col-xs-5">
+            <input type="password" id="registerPassword" class="form-control" placeholder="" />
+        </div>
+        <div class="help-block col-xs-3"></div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-5 col-xs-offset-4">
+            <button class="btn btn-primary" id="registerBtn"> <span lang="register_now">马上注册</span> </button>
+        </div>
+        <div class="help-block col-xs-2"></div>
+    </div>
+</div>
+<!-- 注册结束 -->
+<div class="footer-fix">
+    <a href="#" class="pull-right aboutLink"><span lang="extension_name">在线记事本</span>v1.8.0</a>
+</div>
+<div class="prompting text-center"></div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><span lang="are_you_sure_you_want_to_delete_note">确认要删除操作吗？</span></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><span lang="cancel">取消</span></button>
+                <button type="button" class="btn btn-primary" id="noteDelBtn" data-dismiss="modal"><span lang="delete_now">马上删除</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
